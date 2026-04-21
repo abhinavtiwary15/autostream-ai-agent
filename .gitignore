@@ -1,5 +1,6 @@
 # Secrets
 .env
+*.zip
 
 # Python
 __pycache__/
