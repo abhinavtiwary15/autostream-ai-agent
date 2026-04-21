@@ -1,0 +1,17 @@
+# AutoStream Agent — Python dependencies
+# Tested with Python 3.11
+
+# LangChain core + LangGraph
+langchain>=0.3.0
+langchain-core>=0.3.0
+langgraph>=0.2.0
+
+# Typing extensions (for TypedDict / Annotated backports)
+typing-extensions>=4.9.0
+
+# Google Gemini LLM provider
+langchain-google-genai>=2.0.0    # for Gemini 1.5/2.x Flash
+google-generativeai>=0.8.0
+
+# Utilities
+python-dotenv>=1.0.0    # load GOOGLE_API_KEY from a .env file
