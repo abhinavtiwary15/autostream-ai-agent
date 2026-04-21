@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aria — AutoStream AI Agent</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-play-circle"></i>
+                    <span>AutoStream</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="nav-section">
+                    <label>CONVERSATION</label>
+                    <button class="nav-item active" onclick="resetChat()">
+                        <i class="fas fa-plus"></i>
+                        <span>New Session</span>
+                    </button>
+                    <div class="nav-item">
+                        <i class="fas fa-history"></i>
+                        <span>History (Demo)</span>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <label>AGENT STATE</label>
+                    <div class="state-card">
+                        <div class="state-item">
+                            <span class="label">Intent:</span>
+                            <span id="state-intent" class="value">None</span>
+                        </div>
+                        <div class="state-item">
+                            <span class="label">Lead Captured:</span>
+                            <span id="state-captured" class="value status-off">False</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">AJ</div>
+                    <div class="info">
+                        <span class="name">Candidate Demo</span>
+                        <span class="role">Admin</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <div class="agent-info">
+                    <div class="agent-avatar">
+                        <div class="pulse"></div>
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Aria&backgroundColor=b6e3f4" alt="Aria">
+                    </div>
+                    <div class="agent-details">
+                        <h1>Aria</h1>
+                        <span class="status">Online | Active Agent</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" title="Refresh knowledge base"><i class="fas fa-sync-alt"></i></button>
+                    <button class="icon-btn" title="View Graph Logic"><i class="fas fa-project-diagram"></i></button>
+                </div>
+            </header>
+
+            <div class="messages-container" id="messages-container">
+                <div class="message assistant">
+                    <div class="message-content">
+                        Hi there! 👋 I'm Aria, your AutoStream assistant. Ask me about pricing, features, or how to get started!
+                    </div>
+                </div>
+            </div>
+
+            <div class="typing-indicator" id="thinking-indicator">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <span class="thinking-text">Aria is thinking...</span>
+            </div>
+
+            <footer class="chat-input-container">
+                <div class="input-wrapper">
+                    <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
+                    <button id="send-btn" class="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <p class="disclaimer">Powered by LangGraph & Google Gemini 2.5 Flash</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h2>Lead Captured!</h2>
+            <p>The agent has successfully processed the lead qualification flow and triggered the mock tool.</p>
+            <div id="lead-data" class="lead-summary"></div>
+            <button onclick="closeModal()">Great!</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

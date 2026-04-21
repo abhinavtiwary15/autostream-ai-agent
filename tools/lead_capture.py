@@ -37,6 +37,9 @@ def mock_lead_capture(name: str, email: str, platform: str) -> dict:
         }
     }
 
+    # EXACT output required by assignment brief
+    print(f"Lead captured successfully: {name}, {email}, {platform}")
+
     # Console output as required by the assignment
     print("\n" + "=" * 55)
     print("✅  LEAD CAPTURED SUCCESSFULLY")

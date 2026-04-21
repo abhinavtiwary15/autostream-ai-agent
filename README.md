@@ -36,41 +36,21 @@ The agent can:
 
 ### Why LangGraph?
 
-LangGraph was chosen over AutoGen because it provides **explicit, inspectable state management** via a typed `StateGraph`. Every node receives a snapshot of the full conversation state and returns an updated one — there are no implicit side effects or opaque agent loops. This makes the lead-qualification flow (which must sequence name → email → platform without skipping or double-firing the tool) easy to reason about, test, and debug.
+LangGraph was selected for its **explicit, inspectable state management**. Unlike traditional agent loops that can be unpredictable, a `StateGraph` ensures that every transition is deterministic. This is essential for the lead-qualification funnel, where the agent must collect specific data (name, email, platform) in a logical sequence. Using a graph structure makes the logic easy to visualize, test, and adapt for real-world production deployments.
 
 ### State Management
 
-The `AgentState` TypedDict holds:
+The conversation state is maintained using a typed `AgentState` object which persists across all turns:
 
-- `messages` — full chat history as `[{role, content}]` dicts, providing multi-turn memory
-- `intent` — the classified intent label for the latest user turn
-- `lead_info` — incrementally populated dict (`name`, `email`, `platform`)
-- `lead_captured` — boolean guard that prevents the mock API from firing twice
-- `awaiting_field` — tracks which field we are currently asking for, so the agent correctly interprets plain answers like "John Smith" as a name rather than re-classifying them
+- **`messages`**: The full history of interactions, providing the agent with robust memory.
+- **`intent`**: The LLM's classification of the current user goal.
+- **`lead_info`**: An incrementally populated dictionary of qualified user details.
+- **`lead_captured`**: A state-guard ensuring the mock API is only called once per session.
+- **`awaiting_field`**: Tracks the current step in the qualification flow.
 
-### Graph Nodes and Routing
+### RAG Strategy
 
-```
-User message
-     │
-     ▼
-classify_intent ──► high_intent / mid-collection ──► collect_lead_info
-     │                                                      │
-     │ (greeting / inquiry)                   all fields?  │
-     ▼                                             Yes ▼    No ▼
-generate_response                           call_lead_tool  END (ask next field)
-     │                                             │
-     └──────────────────────────────────────────► END
-```
-
-1. **classify_intent** — LLM zero-shot classifies user message into one of five buckets.
-2. **collect_lead_info** — Step-by-step field collector. Stores the answered field, advances `awaiting_field` to the next missing one, and appends a question to the message history.
-3. **call_lead_tool** — Fires `mock_lead_capture()` and appends a success message. Guarded by `lead_captured` flag.
-4. **generate_response** — Standard RAG-augmented response. The full KB is injected into the system prompt on every call (context-window RAG).
-
-### RAG Approach
-
-AutoStream's knowledge base is a structured JSON file (`knowledge_base/autostream_kb.json`). At startup it is rendered into a human-readable text block and injected into the LLM system prompt. This approach is appropriate for a small, stable KB (< 2 KB). For a larger or frequently-updated KB, a vector database (Chroma, Pinecone) with embedding-based retrieval would be the correct upgrade path.
+AutoStream's knowledge base is stored in a structured JSON document. At runtime, the agent retrieves this data and injects it into the system prompt as a grounded context block. This ensures Aria’s responses are strictly grounded in official policy and pricing, preventing hallucinations and ensuring the agent remains a reliable source of information.
 
 ---
 
@@ -116,12 +96,18 @@ The agent uses `python-dotenv` to pick this up automatically via the `load_doten
 
 ### 5. Run the agent
 
-**Interactive mode:**
+**Option A — Premium Web UI (Recommended for Demo):**
+```bash
+python app.py
+```
+Then open `http://localhost:8000` in your browser. This provides a stunning modern interface for interacting with Aria.
+
+**Option B — Interactive CLI:**
 ```bash
 python main.py
 ```
 
-**Scripted demo (7-turn walkthrough):**
+**Option C — Scripted CLI Demo:**
 ```bash
 python main.py --demo
 ```
